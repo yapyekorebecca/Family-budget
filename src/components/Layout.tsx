@@ -16,7 +16,7 @@ export default function Layout() {
   const location = useLocation()
 
   const navItems = [
-    { path: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/expenses', label: 'Expenses', icon: Wallet },
     { path: '/analytics', label: 'Analytics', icon: BarChart3 },
     { path: '/budgets', label: 'Budgets', icon: PieChart },
@@ -31,7 +31,11 @@ export default function Layout() {
         <nav className="w-56 bg-sidebar flex flex-col p-6 border-r border-border">
           {/* Logo Area */}
           <div className="mb-8">
-            <span className="text-lg font-bold text-primary">FamBudget</span>
+            {/* FamBudget Logo in Brownice Font */}
+            <span className="text-4xl font-bold" style={{ fontFamily: 'Florida Vibes, sans-serif' }}>
+              <span className="text-primary">Fam</span>
+              <span className="text-gray-500">Budget</span>
+            </span>
           </div>
 
           {/* Navigation */}

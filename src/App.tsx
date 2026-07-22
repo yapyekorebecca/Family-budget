@@ -2,6 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ExpenseProvider } from './context/ExpenseContext'
 import { ThemeProvider } from './context/ThemeContext'
 import Layout from './components/Layout'
+import LandingPage from './pages/LandingPage'
+import SignupPage from './pages/SignupPage'
+import LoginPage from './pages/LoginPage'
 import Dashboard from './pages/Dashboard'
 import Expenses from './pages/Expenses'
 import Analytics from './pages/Analytics'
@@ -16,8 +19,11 @@ function App() {
       <ExpenseProvider>
         <Router>
           <Routes>
+            <Route index element={<LandingPage />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="signup" element={<SignupPage />} />
             <Route element={<Layout />}>
-              <Route index element={<Dashboard />} />
+              <Route path="dashboard" element={<Dashboard />} />
               <Route path="expenses" element={<Expenses />} />
               <Route path="analytics" element={<Analytics />} />
               <Route path="budgets" element={<Budgets />} />
