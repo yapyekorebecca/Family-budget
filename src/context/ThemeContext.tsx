@@ -11,24 +11,17 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [isDark, setIsDark] = useState(false)
 
   useEffect(() => {
-    const saved = localStorage.getItem('theme')
-    if (saved) {
-      setIsDark(saved === 'dark')
-    } else {
-      setIsDark(window.matchMedia('(prefers-color-scheme: dark)').matches)
-    }
-  }, [])
-
-  useEffect(() => {
+    // Clear ALL localStorage items
+    localStorage.clear()
+    // Force light mode
+    localStorage.setItem('theme', 'light')
+    setIsDark(false)
     const html = document.documentElement
-    if (isDark) {
-      html.classList.add('dark')
-      localStorage.setItem('theme', 'dark')
-    } else {
-      html.classList.remove('dark')
-      localStorage.setItem('theme', 'light')
-    }
-  }, [isDark])
+    html.classList.remove('dark')
+    html.style.colorScheme = 'light'
+    // Reload page to ensure all changes take effect
+    // window.location.reload()
+  }, [])
 
   const toggleTheme = () => setIsDark(!isDark)
 
