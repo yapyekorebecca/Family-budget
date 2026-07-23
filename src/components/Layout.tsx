@@ -31,8 +31,8 @@ export default function Layout() {
         <nav className="w-56 bg-sidebar flex flex-col p-6 border-r border-border">
           {/* Logo Area */}
           <div className="mb-8">
-            {/* FamBudget Logo in Brownice Font */}
-            <span className="text-4xl font-bold" style={{ fontFamily: 'Florida Vibes, sans-serif' }}>
+            {/* FamBudget Logo in Florida Vibes Font */}
+            <span className="text-3xl font-bold" style={{ fontFamily: 'Florida Vibes, sans-serif' }}>
               <span className="text-primary">Fam</span>
               <span className="text-gray-500">Budget</span>
             </span>

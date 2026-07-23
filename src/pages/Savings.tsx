@@ -9,37 +9,40 @@ import { motion } from 'framer-motion'
 export default function Savings() {
   const { savingsGoals, addSavingsGoal, deleteSavingsGoal, updateSavingsGoal } = useExpenses()
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [editingGoal, setEditingGoal] = useState<{ id: string; title: string; target: number; current: number; description?: string } | null>(null)
-  const [formData, setFormData] = useState({ title: '', target: '', current: '', description: '' })
+  const [editingGoal, setEditingGoal] = useState<{ id: string; title: string; targetAmount: number; currentAmount: number; deadline?: string; description?: string } | null>(null)
+  const [formData, setFormData] = useState({ title: '', targetAmount: '', currentAmount: '', deadline: '', description: '' })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (editingGoal) {
       updateSavingsGoal(editingGoal.id, {
         title: formData.title,
-        target: Number(formData.target),
-        current: Number(formData.current),
+        target: Number(formData.targetAmount),
+        current: Number(formData.currentAmount),
+        deadline: formData.deadline,
         description: formData.description,
       })
     } else {
       addSavingsGoal({
         title: formData.title,
-        target: Number(formData.target),
-        current: Number(formData.current),
+        target: Number(formData.targetAmount),
+        current: Number(formData.currentAmount),
+        deadline: formData.deadline,
         description: formData.description,
       })
     }
     setIsModalOpen(false)
     setEditingGoal(null)
-    setFormData({ title: '', target: '', current: '', description: '' })
+    setFormData({ title: '', targetAmount: '', currentAmount: '', deadline: '', description: '' })
   }
 
   const handleEdit = (goal: any) => {
     setEditingGoal(goal)
     setFormData({
       title: goal.title,
-      target: goal.target.toString(),
-      current: goal.current.toString(),
+      targetAmount: goal.target.toString(),
+      currentAmount: goal.current.toString(),
+      deadline: goal.deadline || '',
       description: goal.description || '',
     })
     setIsModalOpen(true)
@@ -53,7 +56,7 @@ export default function Savings() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Savings Goals</h1>
+          <h1 className="text-2xl font-bold">Savings Goals</h1>
           <p className="text-text-muted mt-1">Track your savings goals and progress</p>
         </div>
         <Button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2">
@@ -80,9 +83,12 @@ export default function Savings() {
                 <Card className="p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <h3 className="text-xl font-bold">{goal.title}</h3>
+                      <h3 className="text-lg font-bold">{goal.title}</h3>
                       {goal.description && (
                         <p className="text-text-muted text-sm mt-1">{goal.description}</p>
+                      )}
+                      {goal.deadline && (
+                        <p className="text-text-muted text-xs mt-1">Due: {new Date(goal.deadline).toLocaleDateString()}</p>
                       )}
                     </div>
                     <div className="flex gap-2">
@@ -135,7 +141,7 @@ export default function Savings() {
             animate={{ opacity: 1, scale: 1 }}
             className="bg-surface rounded-2xl p-6 w-full max-w-md"
           >
-            <h2 className="text-2xl font-bold mb-6">
+            <h2 className="text-lg font-bold mb-6">
               {editingGoal ? 'Edit Savings Goal' : 'Add Savings Goal'}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -149,18 +155,24 @@ export default function Savings() {
               <Input
                 label="Target Amount"
                 type="number"
-                value={formData.target}
-                onChange={(e) => setFormData({ ...formData, target: e.target.value })}
+                value={formData.targetAmount}
+                onChange={(e) => setFormData({ ...formData, targetAmount: e.target.value })}
                 placeholder="1000000"
                 required
               />
               <Input
                 label="Current Savings"
                 type="number"
-                value={formData.current}
-                onChange={(e) => setFormData({ ...formData, current: e.target.value })}
+                value={formData.currentAmount}
+                onChange={(e) => setFormData({ ...formData, currentAmount: e.target.value })}
                 placeholder="0"
                 required
+              />
+              <Input
+                label="Deadline (optional)"
+                type="date"
+                value={formData.deadline}
+                onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
               />
               <Input
                 label="Description (optional)"
@@ -176,7 +188,7 @@ export default function Savings() {
                   onClick={() => {
                     setIsModalOpen(false)
                     setEditingGoal(null)
-                    setFormData({ title: '', target: '', current: '', description: '' })
+                    setFormData({ title: '', targetAmount: '', currentAmount: '', deadline: '', description: '' })
                   }}
                 >
                   Cancel

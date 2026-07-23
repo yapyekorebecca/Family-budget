@@ -71,7 +71,7 @@ export default function Settings() {
     <div className="space-y-8 max-w-2xl">
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
         <div>
-          <h1 className="text-3xl font-bold">Settings</h1>
+          <h1 className="text-2xl font-bold">Settings</h1>
           <p className="text-text-muted mt-1">Manage your app preferences and data</p>
         </div>
       </motion.div>
@@ -79,7 +79,7 @@ export default function Settings() {
       {/* Appearance */}
       <motion.div custom={0} variants={cardVariants} initial="hidden" animate="visible">
         <Card className="p-6">
-          <h2 className="text-xl font-bold mb-4">Appearance</h2>
+          <h2 className="text-lg font-bold mb-4">Appearance</h2>
           <SettingRow
             title="Theme"
             description={isDark ? 'Dark mode is currently active' : 'Light mode is currently active'}
@@ -107,7 +107,7 @@ export default function Settings() {
       {/* Data Management */}
       <motion.div custom={1} variants={cardVariants} initial="hidden" animate="visible">
         <Card className="p-6">
-          <h2 className="text-xl font-bold mb-4">Data Management</h2>
+          <h2 className="text-lg font-bold mb-4">Data Management</h2>
           <div className="space-y-3">
             <SettingRow
               title="Export Data"
@@ -142,7 +142,7 @@ export default function Settings() {
       {/* About */}
       <motion.div custom={2} variants={cardVariants} initial="hidden" animate="visible">
         <Card className="p-6">
-          <h2 className="text-xl font-bold mb-4">About</h2>
+          <h2 className="text-lg font-bold mb-4">About</h2>
           <div className="grid grid-cols-2 gap-3">
             {[
               { label: 'Application', value: 'FamBudget' },
@@ -179,7 +179,7 @@ export default function Settings() {
                   <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-red-100 mx-auto mb-5">
                     <AlertTriangle className="w-7 h-7 text-red-500" />
                   </div>
-                  <h3 className="text-xl font-bold text-center text-text mb-2">Delete All Data?</h3>
+                  <h3 className="text-lg font-bold text-center text-text mb-2">Delete All Data?</h3>
                   <p className="text-center text-text-muted text-sm mb-7">
                     This will permanently delete all your FamBudget data.
                     This action cannot be undone.

@@ -23,7 +23,7 @@ const categoryColors: Record<CategoryType, string> = {
 }
 
 export default function Expenses() {
-  const { expenses, addExpense, deleteExpense, updateExpense } = useExpenses()
+  const { expenses, addExpense, deleteExpense, updateExpense, familyMembers } = useExpenses()
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
@@ -35,6 +35,7 @@ export default function Expenses() {
     category: 'Food' as CategoryType,
     date: new Date().toISOString().split('T')[0],
     notes: '',
+    familyMember: '',
   })
 
   const filteredExpenses = useMemo(() => {
@@ -66,6 +67,7 @@ export default function Expenses() {
         category: formData.category,
         date: formData.date,
         notes: formData.notes,
+        familyMember: formData.familyMember,
       })
       setEditingId(null)
     } else {
@@ -75,10 +77,11 @@ export default function Expenses() {
         category: formData.category,
         date: formData.date,
         notes: formData.notes,
+        familyMember: formData.familyMember,
       })
     }
 
-    setFormData({ title: '', amount: '', category: 'Food', date: new Date().toISOString().split('T')[0], notes: '' })
+    setFormData({ title: '', amount: '', category: 'Food', date: new Date().toISOString().split('T')[0], notes: '', familyMember: '' })
     setShowForm(false)
   }
 
@@ -91,6 +94,7 @@ export default function Expenses() {
         category: expense.category,
         date: expense.date,
         notes: expense.notes || '',
+        familyMember: expense.familyMember || '',
       })
       setEditingId(id)
       setShowForm(true)
@@ -100,14 +104,14 @@ export default function Expenses() {
   const handleCancel = () => {
     setShowForm(false)
     setEditingId(null)
-    setFormData({ title: '', amount: '', category: 'Food', date: new Date().toISOString().split('T')[0], notes: '' })
+    setFormData({ title: '', amount: '', category: 'Food', date: new Date().toISOString().split('T')[0], notes: '', familyMember: '' })
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Expenses</h1>
+          <h1 className="text-2xl font-bold">Expenses</h1>
           <p className="text-text-muted mt-1">Track and manage your spending</p>
         </div>
         <Button onClick={() => setShowForm(true)} className="flex items-center gap-2">
@@ -119,15 +123,15 @@ export default function Expenses() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-4">
           <div className="text-text-muted text-sm">Total Expenses</div>
-          <div className="text-2xl font-bold text-text">UGX {totalFiltered.toLocaleString()}</div>
+          <div className="text-xl font-bold text-text">UGX {totalFiltered.toLocaleString()}</div>
         </Card>
         <Card className="p-4">
           <div className="text-text-muted text-sm">Number of Transactions</div>
-          <div className="text-2xl font-bold text-text">{filteredExpenses.length}</div>
+          <div className="text-xl font-bold text-text">{filteredExpenses.length}</div>
         </Card>
         <Card className="p-4">
           <div className="text-text-muted text-sm">Average per Transaction</div>
-          <div className="text-2xl font-bold text-text">
+          <div className="text-xl font-bold text-text">
             UGX {filteredExpenses.length > 0 ? Math.round(totalFiltered / filteredExpenses.length).toLocaleString() : '0'}
           </div>
         </Card>
@@ -171,9 +175,9 @@ export default function Expenses() {
             <motion.div
               className="fixed inset-0 flex items-center justify-center z-50 p-4"
             >
-              <Card className="p-6 w-full max-w-md">
+                <Card className="p-6 w-full max-w-md">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold">
+                  <h2 className="text-lg font-bold">
                     {editingId ? 'Edit Expense' : 'New Expense'}
                   </h2>
                   <button onClick={handleCancel} className="text-text-muted hover:text-text">
@@ -210,6 +214,17 @@ export default function Expenses() {
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                     required
                   />
+                  {familyMembers.length > 0 && (
+                    <Select
+                      label="Family Member (optional)"
+                      value={formData.familyMember}
+                      onChange={(e) => setFormData({ ...formData, familyMember: e.target.value })}
+                      options={[
+                        { label: 'Not specified', value: '' },
+                        ...familyMembers.map(member => ({ label: member.name, value: member.id }))
+                      ]}
+                    />
+                  )}
                   <Input
                     label="Notes (optional)"
                     value={formData.notes}
@@ -254,17 +269,22 @@ export default function Expenses() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-semibold text-text">{expense.title}</div>
-                    <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center gap-2 mt-1 flex-wrap">
                       <span className={`px-2 py-0.5 rounded text-xs font-medium ${categoryColors[expense.category]}`}>
                         {expense.category}
                       </span>
                       <span className="text-text-muted text-sm">
                         {new Date(expense.date).toLocaleDateString()}
                       </span>
+                      {expense.familyMember && familyMembers.find(m => m.id === expense.familyMember) && (
+                        <span className="px-2 py-0.5 rounded text-xs bg-primary/10 text-primary font-medium">
+                          {familyMembers.find(m => m.id === expense.familyMember)?.name}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-bold text-text text-lg">UGX {expense.amount.toLocaleString()}</div>
+                    <div className="font-bold text-text text-base">UGX {expense.amount.toLocaleString()}</div>
                     <div className="flex gap-2 mt-2">
                       <button
                         onClick={() => handleEdit(expense.id)} className="text-text-muted hover:text-primary transition-colors"

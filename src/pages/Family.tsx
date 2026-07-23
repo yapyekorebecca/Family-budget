@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { useExpenses } from '../context/ExpenseContext'
 import { Trash2, UserPlus } from 'lucide-react'
 import Card from '../components/ui/Card'
@@ -7,9 +7,24 @@ import Input from '../components/ui/Input'
 import { motion } from 'framer-motion'
 
 export default function Family() {
-  const { familyMembers, addFamilyMember, deleteFamilyMember } = useExpenses()
+  const { familyMembers, addFamilyMember, deleteFamilyMember, expenses } = useExpenses()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [formData, setFormData] = useState({ name: '' })
+  
+  // Get current month
+  const currentMonth = new Date().toISOString().slice(0, 7)
+  
+  // Calculate expenses per member for current month
+  const getMemberExpenses = useMemo(() => {
+    const memberExpenseMap: Record<string, number> = {}
+    familyMembers.forEach(member => {
+      const memberMonthExpenses = expenses.filter(
+        e => e.familyMember === member.id && e.date.startsWith(currentMonth)
+      )
+      memberExpenseMap[member.id] = memberMonthExpenses.reduce((sum, e) => sum + e.amount, 0)
+    })
+    return memberExpenseMap
+  }, [familyMembers, expenses, currentMonth])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -22,7 +37,7 @@ export default function Family() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Family Members</h1>
+          <h1 className="text-2xl font-bold">Family Members</h1>
           <p className="text-text-muted mt-1">Manage your family members</p>
         </div>
         <Button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2">
@@ -46,11 +61,17 @@ export default function Family() {
             >
               <Card className="p-6 text-center">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <div className="w-8 h-8 text-primary text-2xl font-bold">
+                  <div className="w-8 h-8 text-primary text-xl font-bold">
                     {member.name.charAt(0).toUpperCase()}
                   </div>
                 </div>
-                <h3 className="text-xl font-bold">{member.name}</h3>
+                <h3 className="text-lg font-bold mb-2">{member.name}</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between items-center">
+                    <span className="text-text-muted">Expenses This Month:</span>
+                    <span className="font-semibold">UGX {(getMemberExpenses[member.id] || 0).toLocaleString()}</span>
+                  </div>
+                </div>
                 <button
                   onClick={() => deleteFamilyMember(member.id)}
                   className="mt-4 text-text-muted hover:text-danger transition-colors flex items-center gap-2 mx-auto"
@@ -71,7 +92,7 @@ export default function Family() {
             animate={{ opacity: 1, scale: 1 }}
             className="bg-surface rounded-2xl p-6 w-full max-w-md"
           >
-            <h2 className="text-2xl font-bold mb-6">Add Family Member</h2>
+            <h2 className="text-lg font-bold mb-6">Add Family Member</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
                 label="Name"

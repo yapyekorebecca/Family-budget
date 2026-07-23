@@ -7,6 +7,7 @@ export interface Expense {
   category: CategoryType
   date: string
   notes?: string
+  familyMember?: string
 }
 
 export interface Budget {
@@ -21,6 +22,7 @@ export interface SavingsGoal {
   title: string
   target: number
   current: number
+  deadline?: string
   description?: string
 }
 

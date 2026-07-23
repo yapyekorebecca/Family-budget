@@ -20,7 +20,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     return (
       <div className="bg-dark-surface border border-dark-border rounded-xl px-4 py-3 shadow-2xl">
         {label && <p className="text-dark-text-muted text-xs mb-1">{label}</p>}
-        <p className="text-dark-text font-bold">${payload[0].value.toFixed(2)}</p>
+        <p className="text-dark-text font-bold">UGX {payload[0].value.toLocaleString()}</p>
       </div>
     )
   }
@@ -36,7 +36,7 @@ const CustomPieLegend = ({ data }: { data: { name: string; value: number; color:
         <span className="text-base">{categoryIcons[entry.name] || '📌'}</span>
         <div className="min-w-0 flex-1">
           <p className="text-xs text-text-muted dark:text-dark-text-muted truncate">{entry.name}</p>
-          <p className="text-sm font-bold text-text dark:text-dark-text">${entry.value.toFixed(2)}</p>
+          <p className="text-sm font-bold text-text dark:text-dark-text">UGX {entry.value.toLocaleString()}</p>
         </div>
       </div>
     ))}
@@ -52,7 +52,7 @@ export default function Statistics() {
       .filter(([, amount]) => amount > 0)
       .map(([category, amount], idx) => ({
         name: category,
-        value: parseFloat(amount.toFixed(2)),
+        value: amount,
         color: COLORS[idx % COLORS.length],
       }))
       .sort((a, b) => b.value - a.value)
@@ -70,7 +70,7 @@ export default function Statistics() {
       .slice(-12)
       .map(([month, amount]) => ({
         month: new Date(month + '-01').toLocaleDateString('en-US', { month: 'short', year: '2-digit' }),
-        amount: parseFloat(amount.toFixed(2)),
+        amount: amount,
       }))
   }, [expenses])
 
@@ -80,7 +80,7 @@ export default function Statistics() {
   const summaryCards = [
     {
       label: 'Total Spent',
-      value: `$${totalSpent.toFixed(2)}`,
+      value: `UGX ${totalSpent.toLocaleString()}`,
       sub: 'All time',
       gradient: 'from-amber-400 to-orange-500',
       glow: 'shadow-orange-500/20',
@@ -96,7 +96,7 @@ export default function Statistics() {
     },
     {
       label: 'Average Expense',
-      value: `$${expenses.length > 0 ? (totalSpent / expenses.length).toFixed(2) : '0.00'}`,
+      value: `UGX ${expenses.length > 0 ? Math.round(totalSpent / expenses.length).toLocaleString() : '0'}`,
       sub: 'Per transaction',
       gradient: 'from-emerald-400 to-teal-500',
       glow: 'shadow-emerald-500/20',
@@ -105,7 +105,7 @@ export default function Statistics() {
     {
       label: 'Top Category',
       value: topCategory ? topCategory.name : '—',
-      sub: topCategory ? `$${topCategory.value.toFixed(2)}` : 'No data',
+      sub: topCategory ? `UGX ${topCategory.value.toLocaleString()}` : 'No data',
       gradient: 'from-rose-400 to-pink-500',
       glow: 'shadow-rose-500/20',
       bg: 'from-rose-50 to-pink-50 dark:from-rose-950/30 dark:to-pink-950/20',
@@ -130,7 +130,7 @@ export default function Statistics() {
             Analytics
           </span>
         </div>
-        <h1 className="text-4xl font-black text-text dark:text-dark-text tracking-tight">Statistics</h1>
+        <h1 className="text-2xl font-black text-text dark:text-dark-text tracking-tight">Statistics</h1>
         <p className="text-text-muted dark:text-dark-text-muted mt-1">Visualize your spending patterns</p>
       </div>
 
@@ -151,7 +151,7 @@ export default function Statistics() {
               <div className="text-2xl mb-2">{card.emoji}</div>
             )}
             <p className="text-xs font-bold text-text-muted dark:text-dark-text-muted uppercase tracking-widest">{card.label}</p>
-            <p className="text-2xl font-black text-text dark:text-dark-text mt-1 tabular-nums">{card.value}</p>
+            <p className="text-xl font-black text-text dark:text-dark-text mt-1 tabular-nums">{card.value}</p>
             <p className="text-xs text-text-muted dark:text-dark-text-muted mt-1">{card.sub}</p>
           </motion.div>
         ))}
