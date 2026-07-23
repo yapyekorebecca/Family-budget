@@ -56,7 +56,7 @@ export default function Budgets() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Budgets</h1>
+          <h1 className="text-2xl font-bold">Budgets</h1>
           <p className="text-text-muted mt-1">Set and track your category budgets</p>
         </div>
         <Button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2">
@@ -85,7 +85,7 @@ export default function Budgets() {
                 <Card className="p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <h3 className="text-xl font-bold">{budget.category}</h3>
+                      <h3 className="text-lg font-bold">{budget.category}</h3>
                       <p className="text-text-muted text-sm mt-1">{budget.month}</p>
                     </div>
                     <div className="flex gap-2">
@@ -140,7 +140,7 @@ export default function Budgets() {
             animate={{ opacity: 1, scale: 1 }}
             className="bg-surface rounded-2xl p-6 w-full max-w-md"
           >
-            <h2 className="text-2xl font-bold mb-6">
+            <h2 className="text-lg font-bold mb-6">
               {editingBudget ? 'Edit Budget' : 'Add Budget'}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">

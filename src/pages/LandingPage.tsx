@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Menu, Mail, MessageCircle, Send, ChevronDown } from 'lucide-react'
+import { Mail, MessageCircle, Send, ChevronDown } from 'lucide-react'
 
 export default function LandingPage() {
   return (

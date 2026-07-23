@@ -1,4 +1,3 @@
-import React from 'react'
 import { useExpenses } from '../context/ExpenseContext'
 import Card from '../components/ui/Card'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
@@ -21,14 +20,14 @@ export default function Analytics() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Analytics</h1>
+        <h1 className="text-2xl font-bold">Analytics</h1>
         <p className="text-text-muted mt-1">Detailed financial insights</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
           <Card className="p-6">
-            <h2 className="text-xl font-bold mb-4">Spending by Category</h2>
+            <h2 className="text-lg font-bold mb-4">Spending by Category</h2>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -54,7 +53,7 @@ export default function Analytics() {
 
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
           <Card className="p-6">
-            <h2 className="text-xl font-bold mb-4">Category Breakdown</h2>
+            <h2 className="text-lg font-bold mb-4">Category Breakdown</h2>
             <div className="space-y-4">
               {CATEGORIES.map((cat, idx) => {
                 const amount = categoryTotals[cat] || 0
