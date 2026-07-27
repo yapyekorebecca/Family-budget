@@ -112,3 +112,26 @@ body {
 .visual-placeholder {
   @apply rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50;
 }
+
+/* ─── Hero Text Animation ─── */
+@keyframes color-change {
+  0%, 100% {
+    background-position: 0% 50%;
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    filter: hue-rotate(90deg);
+  }
+  50% {
+    background-position: 100% 50%;
+    filter: hue-rotate(180deg);
+  }
+  75% {
+    filter: hue-rotate(270deg);
+  }
+}
+
+.animate-color-change {
+  background-size: 200% 200%;
+  animation: color-change 4s ease-in-out infinite;
+}

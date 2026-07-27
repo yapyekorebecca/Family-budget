@@ -21,8 +21,15 @@ export default function HeroSection() {
 
             {/* Right — Content */}
             <div className="flex-1 text-center lg:text-left">
-              <h1 className="text-4xl lg:text-6xl font-bold leading-[1.1] tracking-tight mb-6 text-[#1f2937]">
-                Keep all your family expenses in one place.
+              <h1 className="text-5xl lg:text-7xl font-bold leading-[1.1] tracking-tight mb-6 text-[#1f2937]">
+                Keep all your family expenses{' '}
+                <span className="relative inline-block">
+                  <span className="animate-color-change bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                    in one place
+                  </span>
+                  <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-purple-500 to-pink-500 animate-pulse"></span>
+                </span>
+                .
               </h1>
 
               <p className="text-lg lg:text-xl text-gray-500 mb-10 max-w-xl leading-relaxed">
