@@ -8,8 +8,14 @@ import { motion } from 'framer-motion'
 import { TrendingUp, PieChart as PieIcon, BarChart2, Activity } from 'lucide-react'
 
 const categoryIcons: Record<string, string> = {
-  Food: '🍔', Transport: '🚗', Entertainment: '🎬', Utilities: '💡',
-  Shopping: '🛍️', Healthcare: '🏥', Education: '📚', Other: '📌',
+  Food: 'Food',
+  Transport: 'Transport',
+  Entertainment: 'Entertainment',
+  Utilities: 'Utilities',
+  Shopping: 'Shopping',
+  Healthcare: 'Healthcare',
+  Education: 'Education',
+  Other: 'Other',
 }
 
 const COLORS = ['#f59e0b', '#6366f1', '#10b981', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#14b8a6']
@@ -33,7 +39,6 @@ const CustomPieLegend = ({ data }: { data: { name: string; value: number; color:
     {data.map((entry, idx) => (
       <div key={entry.name} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-surface-alt dark:bg-dark-surface-alt">
         <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[idx % COLORS.length] }} />
-        <span className="text-base">{categoryIcons[entry.name] || '📌'}</span>
         <div className="min-w-0 flex-1">
           <p className="text-xs text-text-muted dark:text-dark-text-muted truncate">{entry.name}</p>
           <p className="text-sm font-bold text-text dark:text-dark-text">UGX {entry.value.toLocaleString()}</p>
@@ -104,12 +109,11 @@ export default function Statistics() {
     },
     {
       label: 'Top Category',
-      value: topCategory ? topCategory.name : '—',
+      value: topCategory ? topCategory.name : '-',
       sub: topCategory ? `UGX ${topCategory.value.toLocaleString()}` : 'No data',
       gradient: 'from-rose-400 to-pink-500',
       glow: 'shadow-rose-500/20',
       bg: 'from-rose-50 to-pink-50 dark:from-rose-950/30 dark:to-pink-950/20',
-      emoji: topCategory ? categoryIcons[topCategory.name] : '📊',
     },
   ]
 
@@ -147,9 +151,6 @@ export default function Statistics() {
             className={`relative bg-gradient-to-br ${card.bg} rounded-2xl p-5 border border-white/60 dark:border-white/5 shadow-lg ${card.glow} overflow-hidden`}
           >
             <div className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r ${card.gradient}`} />
-            {card.emoji && (
-              <div className="text-2xl mb-2">{card.emoji}</div>
-            )}
             <p className="text-xs font-bold text-text-muted dark:text-dark-text-muted uppercase tracking-widest">{card.label}</p>
             <p className="text-xl font-black text-text dark:text-dark-text mt-1 tabular-nums">{card.value}</p>
             <p className="text-xs text-text-muted dark:text-dark-text-muted mt-1">{card.sub}</p>
@@ -201,7 +202,6 @@ export default function Statistics() {
             </>
           ) : (
             <div className="h-60 flex flex-col items-center justify-center text-text-muted dark:text-dark-text-muted">
-              <div className="text-5xl mb-3">📊</div>
               <p className="font-medium">No data yet</p>
             </div>
           )}
@@ -242,14 +242,13 @@ export default function Statistics() {
             </ResponsiveContainer>
           ) : (
             <div className="h-60 flex flex-col items-center justify-center text-text-muted dark:text-dark-text-muted">
-              <div className="text-5xl mb-3">📈</div>
               <p className="font-medium">No data yet</p>
             </div>
           )}
         </motion.div>
       </div>
 
-      {/* Line chart — spending over time */}
+      {/* Line chart - spending over time */}
       {monthlyStats.length > 1 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -124,7 +124,7 @@ export default function Settings() {
 
             <SettingRow
               title="Clear All Data"
-              description="Permanently delete all data — this cannot be undone"
+              description="Permanently delete all data - this cannot be undone"
               danger
             >
               <button
