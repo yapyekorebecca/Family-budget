@@ -83,3 +83,32 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-text-muted;
 }
+
+/* ─── Landing Page Utilities ─── */
+
+/* Consistent section spacing for landing sections */
+.landing-section {
+  @apply py-24 lg:py-32 px-8;
+}
+
+/* Standard content container */
+.landing-container {
+  @apply max-w-6xl mx-auto;
+}
+
+/* Large section headings */
+.section-title {
+  @apply text-3xl lg:text-5xl font-bold leading-tight tracking-tight;
+  color: #1f2937;
+}
+
+/* Section subtitle / description text */
+.section-subtitle {
+  @apply text-lg lg:text-xl leading-relaxed;
+  color: #6b7280;
+}
+
+/* Visual placeholder for future illustrations, screenshots, animations */
+.visual-placeholder {
+  @apply rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50;
+}

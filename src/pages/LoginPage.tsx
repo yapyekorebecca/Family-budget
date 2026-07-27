@@ -1,9 +1,50 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Eye, EyeOff, CheckCircle2, ChevronLeft, Mail, Lock } from 'lucide-react'
+import { useState, useEffect, FormEvent } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Eye, EyeOff, CheckCircle2, ChevronLeft, Mail, Lock, Loader2, AlertCircle } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
 
 export default function LoginPage() {
+  const { login, authLoading, isAuthenticated, errors, clearErrors } = useAuth()
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+
+  // Form state
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+
+  // --- Redirect if already logged in (go straight to dashboard)
+  useEffect(() => {
+    if (isAuthenticated) {
+      const next = searchParams.get('next')
+      navigate(next || '/dashboard', { replace: true })
+    }
+  }, [isAuthenticated, navigate, searchParams])
+
+  // --- Clear old backend errors when user starts typing (good UX)
+  useEffect(() => {
+    if (errors.length) {
+      const t = setTimeout(clearErrors, 400)
+      return () => clearTimeout(t)
+    }
+  }, [email, password, errors, clearErrors])
+
+  // --- Handle form submit → call API via AuthContext
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+
+    // Very basic frontend sanity check (real validation done by Django!)
+    if (!email || !password) return
+
+    const success = await login(email.trim().toLowerCase(), password)
+    if (success) {
+      const next = searchParams.get('next')
+      navigate(next || '/dashboard', { replace: true })
+    }
+  }
+
+  // Detect session_expired redirect param
+  const sessionExpired = searchParams.get('session_expired') === 'true'
 
   return (
     <div className="min-h-screen bg-[#f0fdfa] flex items-center justify-center p-4">
@@ -34,6 +75,29 @@ export default function LoginPage() {
             </p>
           </div>
 
+          {/* Session Expired Notice */}
+          {sessionExpired && (
+            <div className="mb-6 flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm">
+              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-medium">Your session has expired</p>
+                <p className="text-amber-700/90">Please log in again to continue.</p>
+              </div>
+            </div>
+          )}
+
+          {/* Backend validation errors */}
+          {errors.length > 0 && (
+            <div className="mb-6 space-y-2">
+              {errors.map((msg, i) => (
+                <div key={i} className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                  <span>{msg}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Trust Signals */}
           <div className="flex items-center justify-center gap-6 mb-6 text-sm text-gray-600">
             <div className="flex items-center gap-2">
@@ -47,7 +111,7 @@ export default function LoginPage() {
           </div>
 
           {/* Form */}
-          <form className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
@@ -56,9 +120,13 @@ export default function LoginPage() {
                 <input
                   id="email"
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                   placeholder="jane@example.com"
                   autoFocus
+                  required
+                  disabled={authLoading}
                 />
               </div>
             </div>
@@ -71,13 +139,18 @@ export default function LoginPage() {
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                   placeholder="••••••••"
+                  required
+                  disabled={authLoading}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                  disabled={authLoading}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -87,9 +160,17 @@ export default function LoginPage() {
             {/* Login Button */}
             <button
               type="submit"
-              className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30"
+              disabled={authLoading || !email || !password}
+              className="w-full bg-primary hover:bg-primary/90 disabled:bg-primary/60 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 flex items-center justify-center gap-2"
             >
-              Login
+              {authLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Signing in...</span>
+                </>
+              ) : (
+                <span>Login</span>
+              )}
             </button>
           </form>
 
