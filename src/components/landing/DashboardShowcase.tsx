@@ -7,10 +7,6 @@ export default function DashboardShowcase() {
         <div className="max-w-6xl mx-auto px-8">
           {/* Centered Intro */}
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <p className="text-sm font-semibold text-primary tracking-widest uppercase mb-4">
-              Your Home Screen
-            </p>
-
             <h2 className="section-title mb-6">
               A clear picture of your money.
             </h2>
@@ -22,11 +18,11 @@ export default function DashboardShowcase() {
           </div>
 
           {/* Dashboard Screenshot Placeholder */}
-          <div className="max-w-5xl mx-auto flex items-center justify-center">
+          <div className="max-w-4xl mx-auto flex items-center justify-center">
             <img
               src="/Budget Management animation for lottie.svg"
               alt="Budget Management Dashboard"
-              className="w-full h-auto object-contain"
+              className="w-full max-w-2xl h-auto object-contain"
             />
           </div>
         </div>
