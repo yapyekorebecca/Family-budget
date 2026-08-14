@@ -58,9 +58,8 @@ urlpatterns = [
     # -------------------------
     path('api/auth/', include('accounts.urls', namespace='accounts')),
 
-    # Future app URLs (ready for later tasks):
-    # path('api/family/', include('family.urls', namespace='family')),
-    # path('api/expenses/', include('expenses.urls', namespace='expenses')),
-    # path('api/budgets/', include('budgets.urls', namespace='budgets')),
-    # path('api/goals/', include('goals.urls', namespace='goals')),
+    path('api/family/', include('family.urls', namespace='family')),
+    path('api/expenses/', include('expenses.urls', namespace='expenses')),
+    path('api/budgets/', include('budgets.urls', namespace='budgets')),
+    path('api/goals/', include('goals.urls', namespace='goals')),
 ]

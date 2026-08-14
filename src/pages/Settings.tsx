@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useTheme } from '../context/ThemeContext'
-import { useExpenses } from '../context/ExpenseContext'
+import { useAuth } from '../context/AuthContext'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
-import { Trash2, Moon, Sun, Download, AlertTriangle } from 'lucide-react'
+import { Moon, Sun, AlertTriangle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface SettingRowProps {
@@ -33,33 +33,11 @@ function SettingRow({ title, description, children, danger }: SettingRowProps) {
 
 export default function Settings() {
   const { isDark, toggleTheme } = useTheme()
-  const { expenses, budgets, savingsGoals, familyMembers } = useExpenses()
+  const { logout, user } = useAuth()
   const [showConfirm, setShowConfirm] = useState(false)
 
-  const handleExportData = () => {
-    const data = {
-      expenses,
-      budgets,
-      savingsGoals,
-      familyMembers,
-      exportedAt: new Date().toISOString()
-    }
-    const dataStr = JSON.stringify(data, null, 2)
-    const blob = new Blob([dataStr], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `fambudget-export-${new Date().toISOString().split('T')[0]}.json`
-    a.click()
-    URL.revokeObjectURL(url)
-  }
-
-  const handleClearData = () => {
-    localStorage.removeItem('expenses')
-    localStorage.removeItem('budgets')
-    localStorage.removeItem('savingsGoals')
-    localStorage.removeItem('familyMembers')
-    window.location.reload()
+  const handleLogout = async () => {
+    await logout()
   }
 
   const cardVariants = {
@@ -107,32 +85,27 @@ export default function Settings() {
       {/* Data Management */}
       <motion.div custom={1} variants={cardVariants} initial="hidden" animate="visible">
         <Card className="p-6">
-          <h2 className="text-lg font-bold mb-4">Data Management</h2>
+          <h2 className="text-lg font-bold mb-4">Account</h2>
           <div className="space-y-3">
             <SettingRow
-              title="Export Data"
-              description={`Download all your FamBudget data as JSON`}
+              title="Email"
+              description={user?.email ?? '—'}
             >
-              <button
-                onClick={handleExportData}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 text-white text-sm font-bold shadow-md shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-shadow"
-              >
-                <Download className="w-4 h-4" />
-                Export
-              </button>
+              <span className="text-xs text-text-muted px-3 py-1 bg-background rounded-lg">
+                {user?.first_name} {user?.last_name}
+              </span>
             </SettingRow>
 
             <SettingRow
-              title="Clear All Data"
-              description="Permanently delete all data - this cannot be undone"
+              title="Sign Out"
+              description="Log out of your account on this device"
               danger
             >
               <button
                 onClick={() => setShowConfirm(true)}
                 className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-bold shadow-md shadow-red-500/20 hover:shadow-red-500/40 transition-all"
               >
-                <Trash2 className="w-4 h-4" />
-                Clear
+                Sign Out
               </button>
             </SettingRow>
           </div>
@@ -148,7 +121,7 @@ export default function Settings() {
               { label: 'Application', value: 'FamBudget' },
               { label: 'Version', value: 'v1.0.0' },
               { label: 'Description', value: 'Family Budget Manager' },
-              { label: 'Storage', value: 'Local Storage' },
+              { label: 'Backend', value: 'Django REST API' },
             ].map(item => (
               <div key={item.label} className="p-4 rounded-xl bg-background">
                 <p className="text-xs text-text-muted uppercase tracking-wider font-medium mb-1">{item.label}</p>
@@ -159,7 +132,7 @@ export default function Settings() {
         </Card>
       </motion.div>
 
-      {/* Confirmation Modal */}
+      {/* Sign Out Confirmation Modal */}
       <AnimatePresence>
         {showConfirm && (
           <>
@@ -170,29 +143,26 @@ export default function Settings() {
               exit={{ opacity: 0 }}
               onClick={() => setShowConfirm(false)}
             />
-            <motion.div
-              className="fixed inset-0 flex items-center justify-center z-50 p-4"
-            >
+            <motion.div className="fixed inset-0 flex items-center justify-center z-50 p-4">
               <Card className="p-8 max-w-sm w-full relative">
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-400 to-rose-500 rounded-t-2xl" />
                 <div className="pt-4">
                   <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-red-100 mx-auto mb-5">
                     <AlertTriangle className="w-7 h-7 text-red-500" />
                   </div>
-                  <h3 className="text-lg font-bold text-center text-text mb-2">Delete All Data?</h3>
+                  <h3 className="text-lg font-bold text-center text-text mb-2">Sign Out?</h3>
                   <p className="text-center text-text-muted text-sm mb-7">
-                    This will permanently delete all your FamBudget data.
-                    This action cannot be undone.
+                    You will be logged out of your account. Your data is safely stored on the server.
                   </p>
                   <div className="flex gap-3">
                     <Button variant="outline" className="flex-1" onClick={() => setShowConfirm(false)}>
                       Cancel
                     </Button>
                     <button
-                      onClick={handleClearData}
+                      onClick={handleLogout}
                       className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-red-500 to-rose-600 text-white font-bold shadow-lg shadow-red-500/25 hover:shadow-red-500/40 transition-shadow"
                     >
-                      Delete All
+                      Sign Out
                     </button>
                   </div>
                 </div>

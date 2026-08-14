@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import { ExpenseProvider } from './context/ExpenseContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { AuthProvider } from './context/AuthContext'
+import { FamilyProvider } from './context/FamilyContext'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
 import LandingPage from './pages/LandingPage'
@@ -14,21 +14,21 @@ import Budgets from './pages/Budgets'
 import Family from './pages/Family'
 import Savings from './pages/Savings'
 import Settings from './pages/Settings'
+import Statistics from './pages/Statistics'
 
 function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <ExpenseProvider>
+        <FamilyProvider>
           <Router>
             <Routes>
-              {/* --- PUBLIC ROUTES (anyone can visit --- */}
+              {/* --- PUBLIC ROUTES --- */}
               <Route index element={<LandingPage />} />
               <Route path="login" element={<LoginPage />} />
               <Route path="signup" element={<SignupPage />} />
 
-              {/* --- PROTECTED ROUTES (only authenticated users!) --- */}
-              {/* Wrap the entire Layout group with ProtectedRoute so ALL nested routes are private! */}
+              {/* --- PROTECTED ROUTES --- */}
               <Route
                 element={
                   <ProtectedRoute>
@@ -36,10 +36,10 @@ function App() {
                   </ProtectedRoute>
                 }
               >
-                {/* If they visit root AND are already logged in, send them to dashboard */}
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="expenses" element={<Expenses />} />
                 <Route path="analytics" element={<Analytics />} />
+                <Route path="statistics" element={<Statistics />} />
                 <Route path="budgets" element={<Budgets />} />
                 <Route path="family" element={<Family />} />
                 <Route path="savings" element={<Savings />} />
@@ -53,7 +53,7 @@ function App() {
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Router>
-        </ExpenseProvider>
+        </FamilyProvider>
       </AuthProvider>
     </ThemeProvider>
   )

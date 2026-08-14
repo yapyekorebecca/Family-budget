@@ -47,7 +47,7 @@ html {
 }
 
 /* Consistent Heading Sizes - Standard Web Typography */
-h1 { @apply text-2xl font-bold tracking-tight; }
+/* h1 { @apply text-2xl font-bold tracking-tight; } */
 h2 { @apply text-xl font-bold tracking-tight; }
 h3 { @apply text-lg font-semibold tracking-tight; }
 h4 { @apply text-base font-semibold; }
@@ -88,7 +88,7 @@ body {
 
 /* Consistent section spacing for landing sections */
 .landing-section {
-  @apply py-24 lg:py-32 px-8;
+  @apply py-12 lg:py-16 px-8;
 }
 
 /* Standard content container */

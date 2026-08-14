@@ -5,7 +5,7 @@ import AnimationPlaceholder from './AnimationPlaceholder'
 export default function HeroSection() {
   return (
     <AnimationPlaceholder name="HeroReveal">
-      <section className="landing-section pt-16 lg:pt-24">
+      <section className="landing-section pt-0">
         <div className="landing-container">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-16">
             {/* Left — Illustration */}
@@ -21,8 +21,8 @@ export default function HeroSection() {
 
             {/* Right — Content */}
             <div className="flex-1 text-center lg:text-left">
-              <h1 className="text-4xl lg:text-6xl font-bold leading-[1.1] tracking-tight mb-6 text-[#1f2937]">
-                Keep all your family expenses in one place.
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold leading-[1.1] tracking-tight mb-6 text-[#1f2937]">
+                Keep all your family <span className="text-primary">expenses in one place</span>.
               </h1>
 
               <p className="text-lg lg:text-xl text-gray-500 mb-10 max-w-xl leading-relaxed">
