@@ -1,22 +1,11 @@
-import { useMemo } from 'react'
-import { useExpenses } from '../context/ExpenseContext'
+import { useMemo, useState, useEffect, useCallback } from 'react'
+import { getExpenses, ApiExpense } from '../api/expenses'
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis,
   CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line,
 } from 'recharts'
 import { motion } from 'framer-motion'
-import { TrendingUp, PieChart as PieIcon, BarChart2, Activity } from 'lucide-react'
-
-const categoryIcons: Record<string, string> = {
-  Food: 'Food',
-  Transport: 'Transport',
-  Entertainment: 'Entertainment',
-  Utilities: 'Utilities',
-  Shopping: 'Shopping',
-  Healthcare: 'Healthcare',
-  Education: 'Education',
-  Other: 'Other',
-}
+import { TrendingUp, PieChart as PieIcon, BarChart2, Activity, Loader2 } from 'lucide-react'
 
 const COLORS = ['#f59e0b', '#6366f1', '#10b981', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#14b8a6']
 
@@ -49,10 +38,26 @@ const CustomPieLegend = ({ data }: { data: { name: string; value: number; color:
 )
 
 export default function Statistics() {
-  const { expenses, getTotalByCategory } = useExpenses()
+  const [expenses, setExpenses] = useState<ApiExpense[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const fetchExpenses = useCallback(async () => {
+    setLoading(true)
+    try {
+      const res = await getExpenses()
+      if (res.success) setExpenses(res.data)
+    } catch { /* silently ignore */ } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => { fetchExpenses() }, [fetchExpenses])
 
   const categoryStats = useMemo(() => {
-    const totals = getTotalByCategory()
+    const totals: Record<string, number> = {}
+    expenses.forEach((e) => {
+      totals[e.category] = (totals[e.category] ?? 0) + parseFloat(e.amount)
+    })
     return Object.entries(totals)
       .filter(([, amount]) => amount > 0)
       .map(([category, amount], idx) => ({
@@ -61,26 +66,34 @@ export default function Statistics() {
         color: COLORS[idx % COLORS.length],
       }))
       .sort((a, b) => b.value - a.value)
-  }, [getTotalByCategory])
+  }, [expenses])
 
   const monthlyStats = useMemo(() => {
     const monthMap: Record<string, number> = {}
-    expenses.forEach(e => {
+    expenses.forEach((e) => {
       const d = new Date(e.date)
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
-      monthMap[key] = (monthMap[key] || 0) + e.amount
+      monthMap[key] = (monthMap[key] ?? 0) + parseFloat(e.amount)
     })
     return Object.entries(monthMap)
       .sort(([a], [b]) => a.localeCompare(b))
       .slice(-12)
       .map(([month, amount]) => ({
         month: new Date(month + '-01').toLocaleDateString('en-US', { month: 'short', year: '2-digit' }),
-        amount: amount,
+        amount,
       }))
   }, [expenses])
 
-  const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0)
+  const totalSpent = expenses.reduce((sum, e) => sum + parseFloat(e.amount), 0)
   const topCategory = categoryStats[0]
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   const summaryCards = [
     {
