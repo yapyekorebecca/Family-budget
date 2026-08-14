@@ -6,6 +6,7 @@ WORKDIR /app
 # Prevent Python from writing .pyc files and buffering stdout/stderr
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV PORT=8000
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -26,4 +27,4 @@ RUN python manage.py collectstatic --no-input
 EXPOSE 8000
 
 # Run migrations then start Gunicorn
-CMD sh -c "python manage.py migrate --no-input && gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 60"
+CMD sh -c "python manage.py migrate --no-input && gunicorn backend.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 2 --timeout 60"
