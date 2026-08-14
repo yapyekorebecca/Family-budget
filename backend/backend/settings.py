@@ -31,6 +31,10 @@ DEBUG = os.getenv('DEBUG','True') == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
+# Allow all hosts if ALLOWED_HOSTS env var not set (Railway fallback)
+if not os.getenv('ALLOWED_HOSTS'):
+    ALLOWED_HOSTS = ['*']
+
 
 # Application definition
 
