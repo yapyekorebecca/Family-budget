@@ -124,7 +124,6 @@ class LoginSerializer(serializers.Serializer):
     access_token = serializers.CharField(read_only=True)
     refresh_token = serializers.CharField(read_only=True)
     user_id = serializers.IntegerField(read_only=True)
-    email = serializers.EmailField(read_only=True)
     first_name = serializers.CharField(read_only=True)
     last_name = serializers.CharField(read_only=True)
     message = serializers.CharField(read_only=True)
